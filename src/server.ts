@@ -31,9 +31,9 @@ app.use(express.static(publicDir));
 app.get("/api/health", (_req, res) => {
   res.json({
     ok: true,
-    openAiConfigured: Boolean(config.openAiApiKey),
-    defaultModel: config.openAiModel,
-    availableModels: config.openAiModels
+    geminiConfigured: Boolean(config.geminiApiKey),
+    defaultModel: config.geminiModel,
+    availableModels: config.geminiModels
   });
 });
 
@@ -75,7 +75,7 @@ app.post("/api/reports", async (req, res) => {
       return;
     }
 
-    const report = await buildReport(url, pages, parsed.data.model ?? config.openAiModel, {
+    const report = await buildReport(url, pages, parsed.data.model ?? config.geminiModel, {
       userPrompt: parsed.data.prompt
     });
     const saved = store.save(report, randomUUID());

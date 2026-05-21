@@ -38,7 +38,7 @@ export interface ProspectReport {
   websiteUrl: string;
   generatedAt: string;
   model: string;
-  analysisMode: "openai" | "heuristic";
+  analysisMode: "gemini" | "heuristic";
   executiveSummaryJa: string;
   executiveSummaryEn: string;
   companyOverview: string;

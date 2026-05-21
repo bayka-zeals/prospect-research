@@ -23,9 +23,16 @@ loadDotEnv();
 
 export const config = {
   port: Number(process.env.PORT ?? 4177),
-  openAiApiKey: process.env.OPENAI_API_KEY ?? "",
-  openAiModel: process.env.OPENAI_MODEL ?? "gpt-5.4-mini",
-  openAiModels: ["gpt-5.4-mini", "gpt-5.4-nano", "gpt-5.4", "gpt-5.5"],
+  geminiApiKey: process.env.GEMINI_API_KEY ?? "",
+  geminiModel: process.env.GEMINI_MODEL ?? "gemini-3.5-flash",
+  geminiModels: [
+    "gemini-3.5-flash",
+    "gemini-3.1-pro-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite"
+  ],
   maxCrawlPages: Number(process.env.MAX_CRAWL_PAGES ?? 18),
   dataDir: process.env.DATA_DIR ?? "data",
   userAgent:

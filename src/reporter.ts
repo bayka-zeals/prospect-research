@@ -1,8 +1,8 @@
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import { config } from "./config.js";
 import { cleanText, pageToEvidence, truncate } from "./extractor.js";
 import { loadDefaultPrompts, renderPromptTemplate } from "./prompts.js";
-import { openAiReportJsonSchema, prospectReportSchema } from "./reportSchema.js";
+import { geminiReportJsonSchema, prospectReportSchema } from "./reportSchema.js";
 import type { CrawledPage, EvidenceItem, ProspectReport, ScoredProposal } from "./types.js";
 
 export interface ReportPromptOptions {
@@ -12,32 +12,32 @@ export interface ReportPromptOptions {
 export async function buildReport(
   websiteUrl: string,
   pages: CrawledPage[],
-  model = config.openAiModel,
+  model = config.geminiModel,
   promptOptions: ReportPromptOptions = {}
 ): Promise<ProspectReport> {
   const evidence = pages.map(pageToEvidence);
-  if (!config.openAiApiKey) {
+  if (!config.geminiApiKey) {
     return buildHeuristicReport(websiteUrl, pages, evidence, model);
   }
 
   try {
-    const generated = await buildOpenAiReport(websiteUrl, pages, evidence, model, promptOptions);
+    const generated = await buildGeminiReport(websiteUrl, pages, evidence, model, promptOptions);
     return prospectReportSchema.parse(generated);
   } catch (error) {
     const fallback = buildHeuristicReport(websiteUrl, pages, evidence, model);
-    fallback.caveats.unshift(`OpenAI generation failed; heuristic fallback was used. ${String(error).slice(0, 180)}`);
+    fallback.caveats.unshift(`Gemini generation failed; heuristic fallback was used. ${String(error).slice(0, 180)}`);
     return fallback;
   }
 }
 
-async function buildOpenAiReport(
+async function buildGeminiReport(
   websiteUrl: string,
   pages: CrawledPage[],
   evidence: EvidenceItem[],
   model: string,
   promptOptions: ReportPromptOptions
 ): Promise<ProspectReport> {
-  const client = new OpenAI({ apiKey: config.openAiApiKey });
+  const ai = new GoogleGenAI({ apiKey: config.geminiApiKey });
   const defaultPrompts = loadDefaultPrompts();
   const sourcePack = pages.map((page, index) => ({
     evidenceId: evidence[index]?.id,
@@ -55,28 +55,18 @@ async function buildOpenAiReport(
     evidenceJson: JSON.stringify(sourcePack, null, 2)
   });
 
-  const response = await (client as any).responses.create({
+  const response = await ai.models.generateContent({
     model,
-    input: [
-      {
-        role: "system",
-        content: defaultPrompts.systemPrompt
-      },
-      {
-        role: "user",
-        content: userPrompt
-      }
-    ],
-    text: {
-      format: {
-        type: "json_schema",
-        ...openAiReportJsonSchema
-      }
+    contents: userPrompt,
+    config: {
+      systemInstruction: defaultPrompts.systemPrompt,
+      responseMimeType: "application/json",
+      responseJsonSchema: geminiReportJsonSchema
     }
   });
 
-  const raw = response.output_text ?? response.output?.flatMap((item: any) => item.content ?? [])?.[0]?.text;
-  if (!raw) throw new Error("OpenAI response did not include JSON text.");
+  const raw = response.text;
+  if (!raw) throw new Error("Gemini response did not include JSON text.");
   const parsed = JSON.parse(raw);
 
   return {
@@ -84,7 +74,7 @@ async function buildOpenAiReport(
     websiteUrl,
     generatedAt: new Date().toISOString(),
     model,
-    analysisMode: "openai",
+    analysisMode: "gemini",
     evidence
   };
 }
@@ -181,7 +171,7 @@ export function buildHeuristicReport(
     proposals,
     evidence,
     caveats: [
-      "Heuristic report generated because OPENAI_API_KEY is not configured.",
+      "Heuristic report generated because GEMINI_API_KEY is not configured.",
       "Social and review signals, when present, are directional and should be verified before client-facing claims.",
       "The crawler only inspected public pages available during this run."
     ]

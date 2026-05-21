@@ -69,8 +69,8 @@ deleteButton.addEventListener("click", async () => {
 
 async function init() {
   const health = await fetch("/api/health").then((response) => response.json());
-  apiStatus.textContent = health.openAiConfigured
-    ? `OpenAI ready: ${health.defaultModel}`
+  apiStatus.textContent = health.geminiConfigured
+    ? `Gemini ready: ${health.defaultModel}`
     : "No API key: heuristic mode";
   renderModelOptions(health.availableModels || [health.defaultModel], health.defaultModel);
   const prompts = await fetch("/api/prompts/default").then((response) => response.json());
@@ -94,10 +94,12 @@ function renderModelOptions(models, defaultModel) {
 
 function modelLabel(model) {
   const labels = {
-    "gpt-5.4-mini": "gpt-5.4-mini - balanced default",
-    "gpt-5.4-nano": "gpt-5.4-nano - fastest / lowest cost",
-    "gpt-5.4": "gpt-5.4 - higher quality",
-    "gpt-5.5": "gpt-5.5 - best quality"
+    "gemini-3.5-flash": "gemini-3.5-flash - balanced default",
+    "gemini-3.1-pro-preview": "gemini-3.1-pro-preview - strongest reasoning",
+    "gemini-3.1-flash-lite": "gemini-3.1-flash-lite - fastest / lowest cost",
+    "gemini-2.5-pro": "gemini-2.5-pro - stable high quality",
+    "gemini-2.5-flash": "gemini-2.5-flash - stable balanced",
+    "gemini-2.5-flash-lite": "gemini-2.5-flash-lite - stable low cost"
   };
   return labels[model] || model;
 }

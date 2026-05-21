@@ -12,4 +12,4 @@
 # npx playwright install chromium
 #
 # Optional:
-# - OPENAI_API_KEY in .env for AI-generated reports
+# - GEMINI_API_KEY in .env for AI-generated reports

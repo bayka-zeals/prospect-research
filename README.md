@@ -30,18 +30,18 @@ npm run dev
 
 Open `http://localhost:4177`.
 
-`OPENAI_API_KEY` is optional for UI testing. Without it, the app returns a clearly labeled heuristic report using the crawled evidence. Add a real key to `.env` when you want AI-generated reports.
+`GEMINI_API_KEY` is optional for UI testing. Without it, the app returns a clearly labeled heuristic report using the crawled evidence. Add a real key to `.env` when you want AI-generated reports.
 
 ## Environment
 
 ```bash
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-5.4-mini
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini-3.5-flash
 PORT=4177
 MAX_CRAWL_PAGES=18
 ```
 
-The UI model dropdown includes `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4`, and `gpt-5.5`. `OPENAI_MODEL` controls which option is selected by default.
+The UI model dropdown includes `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite`, `gemini-2.5-pro`, `gemini-2.5-flash`, and `gemini-2.5-flash-lite`. `GEMINI_MODEL` controls which option is selected by default.
 
 ## Prompt Defaults
 
@@ -66,7 +66,7 @@ npm test         # build and run unit tests
 3. Run `npm install`.
 4. Run `npx playwright install chromium`.
 5. Run `cp .env.example .env`.
-6. Add `OPENAI_API_KEY` to `.env` if AI reports are needed.
+6. Add `GEMINI_API_KEY` to `.env` if AI reports are needed.
 7. Run `npm run dev`.
 8. Open `http://localhost:4177`.
 
@@ -84,4 +84,4 @@ npm test         # build and run unit tests
 - `Cannot find module node:sqlite` or SQLite-related startup errors: upgrade Node.js to 22.5 or newer.
 - `Executable doesn't exist` from Playwright: run `npx playwright install chromium`.
 - Port conflict on `4177`: change `PORT` in `.env`, then restart `npm run dev`.
-- Report generation works but says `heuristic`: set `OPENAI_API_KEY` in `.env` and restart the server.
+- Report generation works but says `heuristic`: set `GEMINI_API_KEY` in `.env` and restart the server.

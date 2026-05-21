@@ -16,7 +16,7 @@ export const prospectReportSchema = z.object({
   websiteUrl: z.string().url(),
   generatedAt: z.string(),
   model: z.string(),
-  analysisMode: z.enum(["openai", "heuristic"]),
+  analysisMode: z.enum(["gemini", "heuristic"]),
   executiveSummaryJa: z.string().min(1),
   executiveSummaryEn: z.string().min(1),
   companyOverview: z.string().min(1),
@@ -41,67 +41,63 @@ export const prospectReportSchema = z.object({
   caveats: z.array(z.string()).default([])
 });
 
-export const openAiReportJsonSchema = {
-  name: "zeals_prospect_report",
-  schema: {
-    type: "object",
-    additionalProperties: false,
-    required: [
-      "companyName",
-      "executiveSummaryJa",
-      "executiveSummaryEn",
-      "companyOverview",
-      "productServiceSummary",
-      "targetCustomers",
-      "likelyCustomerJourney",
-      "currentConversionPath",
-      "observedPainPoints",
-      "lineOpportunityAreas",
-      "proposals",
-      "caveats"
-    ],
-    properties: {
-      companyName: { type: "string" },
-      executiveSummaryJa: { type: "string" },
-      executiveSummaryEn: { type: "string" },
-      companyOverview: { type: "string" },
-      productServiceSummary: { type: "string" },
-      targetCustomers: { type: "string" },
-      likelyCustomerJourney: { type: "string" },
-      currentConversionPath: { type: "string" },
-      observedPainPoints: { type: "array", minItems: 1, items: { type: "string" } },
-      lineOpportunityAreas: { type: "array", minItems: 1, items: { type: "string" } },
-      proposals: {
-        type: "array",
-        minItems: 3,
-        maxItems: 5,
-        items: {
-          type: "object",
-          additionalProperties: false,
-          required: [
-            "titleJa",
-            "titleEn",
-            "descriptionJa",
-            "descriptionEn",
-            "impact",
-            "effort",
-            "confidence",
-            "evidenceIds"
-          ],
-          properties: {
-            titleJa: { type: "string" },
-            titleEn: { type: "string" },
-            descriptionJa: { type: "string" },
-            descriptionEn: { type: "string" },
-            impact: { type: "integer", minimum: 1, maximum: 5 },
-            effort: { type: "integer", minimum: 1, maximum: 5 },
-            confidence: { type: "integer", minimum: 1, maximum: 5 },
-            evidenceIds: { type: "array", items: { type: "string" } }
-          }
+export const geminiReportJsonSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "companyName",
+    "executiveSummaryJa",
+    "executiveSummaryEn",
+    "companyOverview",
+    "productServiceSummary",
+    "targetCustomers",
+    "likelyCustomerJourney",
+    "currentConversionPath",
+    "observedPainPoints",
+    "lineOpportunityAreas",
+    "proposals",
+    "caveats"
+  ],
+  properties: {
+    companyName: { type: "string" },
+    executiveSummaryJa: { type: "string" },
+    executiveSummaryEn: { type: "string" },
+    companyOverview: { type: "string" },
+    productServiceSummary: { type: "string" },
+    targetCustomers: { type: "string" },
+    likelyCustomerJourney: { type: "string" },
+    currentConversionPath: { type: "string" },
+    observedPainPoints: { type: "array", minItems: 1, items: { type: "string" } },
+    lineOpportunityAreas: { type: "array", minItems: 1, items: { type: "string" } },
+    proposals: {
+      type: "array",
+      minItems: 3,
+      maxItems: 5,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "titleJa",
+          "titleEn",
+          "descriptionJa",
+          "descriptionEn",
+          "impact",
+          "effort",
+          "confidence",
+          "evidenceIds"
+        ],
+        properties: {
+          titleJa: { type: "string" },
+          titleEn: { type: "string" },
+          descriptionJa: { type: "string" },
+          descriptionEn: { type: "string" },
+          impact: { type: "integer", minimum: 1, maximum: 5 },
+          effort: { type: "integer", minimum: 1, maximum: 5 },
+          confidence: { type: "integer", minimum: 1, maximum: 5 },
+          evidenceIds: { type: "array", items: { type: "string" } }
         }
-      },
-      caveats: { type: "array", items: { type: "string" } }
-    }
-  },
-  strict: true
+      }
+    },
+    caveats: { type: "array", items: { type: "string" } }
+  }
 } as const;
