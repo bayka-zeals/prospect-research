@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZEALS Prospect Research</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">ZEALS Sales Research</p>
+        <h1>Prospect Conversion Report</h1>
+      </div>
+      <div class="status" id="apiStatus">Checking setup...</div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <form id="reportForm" class="panel">
+          <label for="urlInput">Company website URL</label>
+          <input id="urlInput" name="url" type="url" placeholder="https://example.jp" required />
+
+          <div class="field-row">
+            <label for="maxPagesInput">Pages</label>
+            <input id="maxPagesInput" name="maxPages" type="number" min="1" max="30" value="18" />
+          </div>
+
+          <div class="field-row">
+            <label for="modelInput">Model</label>
+            <select id="modelInput" name="model"></select>
+          </div>
+
+          <button id="generateButton" type="submit">Generate report</button>
+          <p id="formMessage" class="message"></p>
+        </form>
+
+        <section class="history">
+          <div class="section-heading">
+            <h2>Saved Reports</h2>
+            <button class="ghost" id="refreshButton" type="button">Refresh</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
+      </aside>
+
+      <section class="report-shell">
+        <div class="report-actions">
+          <button id="printButton" class="ghost" type="button">Export PDF</button>
+          <button id="deleteButton" class="danger" type="button" hidden>Delete</button>
+        </div>
+        <article id="reportView" class="report-view empty">
+          <h2>Paste a company URL to begin.</h2>
+          <p>
+            The app will crawl public pages, organize evidence, and draft a bilingual LINE chatbot conversion report for ZEALS sales outreach.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
