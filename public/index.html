@@ -33,10 +33,18 @@
 
           <div class="prompt-field">
             <div class="prompt-heading">
-              <label for="promptInput">Prompt</label>
-              <button class="ghost small" id="resetPromptButton" type="button">Reset</button>
+              <span class="prompt-title">Prompt</span>
+              <button class="ghost small" id="togglePromptButton" type="button" aria-expanded="false" aria-controls="promptEditor">
+                Edit prompt
+              </button>
             </div>
-            <textarea id="promptInput" name="prompt" rows="11"></textarea>
+            <div class="prompt-editor" id="promptEditor" hidden>
+              <div class="prompt-actions">
+                <label for="promptInput">Custom prompt</label>
+                <button class="ghost small" id="resetPromptButton" type="button">Reset</button>
+              </div>
+              <textarea id="promptInput" name="prompt" rows="11"></textarea>
+            </div>
           </div>
 
           <button id="generateButton" type="submit">Generate report</button>

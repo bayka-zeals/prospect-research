@@ -16,6 +16,8 @@ const printButton = document.querySelector("#printButton");
 const deleteButton = document.querySelector("#deleteButton");
 const refreshButton = document.querySelector("#refreshButton");
 const resetPromptButton = document.querySelector("#resetPromptButton");
+const togglePromptButton = document.querySelector("#togglePromptButton");
+const promptEditor = document.querySelector("#promptEditor");
 let defaultPrompt = "";
 
 form.addEventListener("submit", async (event) => {
@@ -48,6 +50,9 @@ form.addEventListener("submit", async (event) => {
 refreshButton.addEventListener("click", loadHistory);
 resetPromptButton.addEventListener("click", () => {
   promptInput.value = defaultPrompt;
+});
+togglePromptButton.addEventListener("click", () => {
+  setPromptExpanded(promptEditor.hidden);
 });
 printButton.addEventListener("click", () => window.print());
 deleteButton.addEventListener("click", async () => {
@@ -95,6 +100,12 @@ function modelLabel(model) {
     "gpt-5.5": "gpt-5.5 - best quality"
   };
   return labels[model] || model;
+}
+
+function setPromptExpanded(isExpanded) {
+  promptEditor.hidden = !isExpanded;
+  togglePromptButton.setAttribute("aria-expanded", String(isExpanded));
+  togglePromptButton.textContent = isExpanded ? "Hide prompt" : "Edit prompt";
 }
 
 async function loadHistory() {

@@ -189,13 +189,30 @@ button.danger:hover {
 .prompt-field {
   display: grid;
   gap: 8px;
+  padding: 10px 0 2px;
 }
 
-.prompt-heading {
+.prompt-heading,
+.prompt-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.prompt-title {
+  color: #314255;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.prompt-editor {
+  display: grid;
+  gap: 8px;
+}
+
+.prompt-editor[hidden] {
+  display: none;
 }
 
 .history {
