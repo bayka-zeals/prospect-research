@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { mkdtempSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { ReportStore } from "./db.js";
-import type { ProspectReport } from "./types.js";
+import { ReportStore } from "../src/db.js";
+import type { ProspectReport } from "../src/types.js";
 
 test("ReportStore saves and reads reports", () => {
   const store = new ReportStore(mkdtempSync(join(tmpdir(), "zeals-reports-")));

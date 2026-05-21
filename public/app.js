@@ -6,6 +6,7 @@ const form = document.querySelector("#reportForm");
 const urlInput = document.querySelector("#urlInput");
 const maxPagesInput = document.querySelector("#maxPagesInput");
 const modelInput = document.querySelector("#modelInput");
+const promptInput = document.querySelector("#promptInput");
 const generateButton = document.querySelector("#generateButton");
 const formMessage = document.querySelector("#formMessage");
 const reportView = document.querySelector("#reportView");
@@ -14,6 +15,8 @@ const apiStatus = document.querySelector("#apiStatus");
 const printButton = document.querySelector("#printButton");
 const deleteButton = document.querySelector("#deleteButton");
 const refreshButton = document.querySelector("#refreshButton");
+const resetPromptButton = document.querySelector("#resetPromptButton");
+let defaultPrompt = "";
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -25,7 +28,8 @@ form.addEventListener("submit", async (event) => {
       body: JSON.stringify({
         url: urlInput.value,
         maxPages: Number(maxPagesInput.value),
-        model: modelInput.value.trim()
+        model: modelInput.value.trim(),
+        prompt: promptInput.value.trim()
       })
     });
     const data = await response.json();
@@ -42,6 +46,9 @@ form.addEventListener("submit", async (event) => {
 });
 
 refreshButton.addEventListener("click", loadHistory);
+resetPromptButton.addEventListener("click", () => {
+  promptInput.value = defaultPrompt;
+});
 printButton.addEventListener("click", () => window.print());
 deleteButton.addEventListener("click", async () => {
   if (!state.currentReportId) return;
@@ -61,6 +68,9 @@ async function init() {
     ? `OpenAI ready: ${health.defaultModel}`
     : "No API key: heuristic mode";
   renderModelOptions(health.availableModels || [health.defaultModel], health.defaultModel);
+  const prompts = await fetch("/api/prompts/default").then((response) => response.json());
+  defaultPrompt = prompts.userPrompt || "";
+  promptInput.value = defaultPrompt;
   await loadHistory();
 }
 

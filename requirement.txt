@@ -1,0 +1,15 @@
+# ZEALS Prospect Research dependency checklist
+#
+# This is a Node.js/TypeScript app, so runtime dependencies are installed from package.json
+# and package-lock.json. No Python/pip dependencies are required.
+#
+# Required:
+# - Node.js 22.5 or newer; Node 24+ recommended
+# - npm, included with Node.js
+#
+# Install commands:
+# npm install
+# npx playwright install chromium
+#
+# Optional:
+# - OPENAI_API_KEY in .env for AI-generated reports

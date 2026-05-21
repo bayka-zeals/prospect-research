@@ -1,13 +1,19 @@
 import OpenAI from "openai";
 import { config } from "./config.js";
 import { cleanText, pageToEvidence, truncate } from "./extractor.js";
+import { loadDefaultPrompts, renderPromptTemplate } from "./prompts.js";
 import { openAiReportJsonSchema, prospectReportSchema } from "./reportSchema.js";
 import type { CrawledPage, EvidenceItem, ProspectReport, ScoredProposal } from "./types.js";
+
+export interface ReportPromptOptions {
+  userPrompt?: string;
+}
 
 export async function buildReport(
   websiteUrl: string,
   pages: CrawledPage[],
-  model = config.openAiModel
+  model = config.openAiModel,
+  promptOptions: ReportPromptOptions = {}
 ): Promise<ProspectReport> {
   const evidence = pages.map(pageToEvidence);
   if (!config.openAiApiKey) {
@@ -15,7 +21,7 @@ export async function buildReport(
   }
 
   try {
-    const generated = await buildOpenAiReport(websiteUrl, pages, evidence, model);
+    const generated = await buildOpenAiReport(websiteUrl, pages, evidence, model, promptOptions);
     return prospectReportSchema.parse(generated);
   } catch (error) {
     const fallback = buildHeuristicReport(websiteUrl, pages, evidence, model);
@@ -28,9 +34,11 @@ async function buildOpenAiReport(
   websiteUrl: string,
   pages: CrawledPage[],
   evidence: EvidenceItem[],
-  model: string
+  model: string,
+  promptOptions: ReportPromptOptions
 ): Promise<ProspectReport> {
   const client = new OpenAI({ apiKey: config.openAiApiKey });
+  const defaultPrompts = loadDefaultPrompts();
   const sourcePack = pages.map((page, index) => ({
     evidenceId: evidence[index]?.id,
     url: page.url,
@@ -42,28 +50,23 @@ async function buildOpenAiReport(
     excerpt: truncate(page.text, 2500)
   }));
 
-  const prompt = `
-You are helping ZEALS sales reps research Japanese B2C prospects for LINE chatbot marketing.
-
-Analyze the public evidence and write a sales-ready bilingual report.
-
-Rules:
-- Use Japanese for executiveSummaryJa and concise English for executiveSummaryEn.
-- Be concrete about LINE chatbot opportunities that can improve conversion rate.
-- Score impact, effort, and confidence from 1 to 5.
-- Use evidenceIds from the provided evidence list for every proposal when possible.
-- Treat social/review sources as directional signals only.
-- Do not invent private data, revenue, customer counts, or unsupported claims.
-- Add caveats for weak evidence or missing pages.
-
-Website: ${websiteUrl}
-Evidence:
-${JSON.stringify(sourcePack, null, 2)}
-`;
+  const userPrompt = renderPromptTemplate(promptOptions.userPrompt?.trim() || defaultPrompts.userPrompt, {
+    websiteUrl,
+    evidenceJson: JSON.stringify(sourcePack, null, 2)
+  });
 
   const response = await (client as any).responses.create({
     model,
-    input: prompt,
+    input: [
+      {
+        role: "system",
+        content: defaultPrompts.systemPrompt
+      },
+      {
+        role: "user",
+        content: userPrompt
+      }
+    ],
     text: {
       format: {
         type: "json_schema",

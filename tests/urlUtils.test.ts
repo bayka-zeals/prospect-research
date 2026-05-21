@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isLikelyUsefulPage, normalizeUrl, scoreLink } from "./urlUtils.js";
+import { isLikelyUsefulPage, normalizeUrl, scoreLink } from "../src/urlUtils.js";
 
 test("normalizeUrl adds scheme and removes tracking params", () => {
   assert.equal(normalizeUrl("example.jp/path/?utm_source=x&a=1#top"), "https://example.jp/path?a=1");

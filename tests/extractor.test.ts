@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { extractPage } from "./extractor.js";
+import { extractPage } from "../src/extractor.js";
 
 test("extractPage collects title, headings, ctas, and links", () => {
   const page = extractPage(

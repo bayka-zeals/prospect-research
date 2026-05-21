@@ -31,6 +31,14 @@
             <select id="modelInput" name="model"></select>
           </div>
 
+          <div class="prompt-field">
+            <div class="prompt-heading">
+              <label for="promptInput">Prompt</label>
+              <button class="ghost small" id="resetPromptButton" type="button">Reset</button>
+            </div>
+            <textarea id="promptInput" name="prompt" rows="11"></textarea>
+          </div>
+
           <button id="generateButton" type="submit">Generate report</button>
           <p id="formMessage" class="message"></p>
         </form>

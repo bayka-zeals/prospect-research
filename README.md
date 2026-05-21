@@ -43,6 +43,13 @@ MAX_CRAWL_PAGES=18
 
 The UI model dropdown includes `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4`, and `gpt-5.5`. `OPENAI_MODEL` controls which option is selected by default.
 
+## Prompt Defaults
+
+- Default prompts live in `prompts/system.txt` and `prompts/user.txt`.
+- The system prompt stays server-side.
+- The user prompt appears in the web app under the Model dropdown and can be edited before each report run.
+- Keep `{{websiteUrl}}` and `{{evidenceJson}}` in the user prompt if you want the model to receive the crawled source pack.
+
 ## Scripts
 
 ```bash
@@ -67,6 +74,7 @@ npm test         # build and run unit tests
 
 - Reports are stored in `data/reports.sqlite`.
 - `data/` is ignored by git because reports are local machine data.
+- `requirement.txt` summarizes the fresh-machine dependency checklist; npm dependencies remain the source of truth in `package.json` and `package-lock.json`.
 - The crawler respects same-domain limits, rate limits requests, and checks `robots.txt` where possible.
 - Public social/review links discovered from the official site are treated as directional signals.
 - If Playwright is not installed, normal HTML fetching still works, but JavaScript-heavy websites may not render correctly.

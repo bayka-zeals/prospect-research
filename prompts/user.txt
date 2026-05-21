@@ -1,0 +1,14 @@
+Create a ZEALS prospect research report for this company website:
+
+{{websiteUrl}}
+
+Focus on:
+- What the company sells
+- Who the likely customers are
+- Where customers may hesitate before conversion
+- How LINE chatbot campaigns could improve booking, inquiry, purchase, repeat, or retention conversion
+- 3-5 specific proposals with impact, effort, confidence, and evidenceIds
+
+Public evidence:
+
+{{evidenceJson}}

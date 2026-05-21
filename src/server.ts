@@ -7,6 +7,7 @@ import { z } from "zod";
 import { config } from "./config.js";
 import { crawlProspectSite } from "./crawler.js";
 import { ReportStore } from "./db.js";
+import { loadDefaultPrompts } from "./prompts.js";
 import { buildReport } from "./reporter.js";
 import { normalizeUrl } from "./urlUtils.js";
 
@@ -19,7 +20,8 @@ const store = new ReportStore(config.dataDir);
 const generateInputSchema = z.object({
   url: z.string().min(3),
   maxPages: z.number().int().min(1).max(30).optional(),
-  model: z.string().min(1).optional()
+  model: z.string().min(1).optional(),
+  prompt: z.string().min(20).max(20000).optional()
 });
 
 const app = express();
@@ -33,6 +35,11 @@ app.get("/api/health", (_req, res) => {
     defaultModel: config.openAiModel,
     availableModels: config.openAiModels
   });
+});
+
+app.get("/api/prompts/default", (_req, res) => {
+  const prompts = loadDefaultPrompts();
+  res.json({ userPrompt: prompts.userPrompt });
 });
 
 app.get("/api/reports", (_req, res) => {
@@ -68,7 +75,9 @@ app.post("/api/reports", async (req, res) => {
       return;
     }
 
-    const report = await buildReport(url, pages, parsed.data.model ?? config.openAiModel);
+    const report = await buildReport(url, pages, parsed.data.model ?? config.openAiModel, {
+      userPrompt: parsed.data.prompt
+    });
     const saved = store.save(report, randomUUID());
     res.status(201).json({ reportId: saved.id, report, crawledPages: pages.length });
   } catch (error) {

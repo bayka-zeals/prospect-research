@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { prospectReportSchema } from "./reportSchema.js";
+import { prospectReportSchema } from "../src/reportSchema.js";
 
 test("prospectReportSchema rejects proposal scores outside 1-5", () => {
   const result = prospectReportSchema.safeParse({
