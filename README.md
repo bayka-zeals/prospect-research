@@ -4,15 +4,33 @@ Local research app for ZEALS sales reps. Paste a Japanese B2C company URL, gener
 
 ## Setup
 
+### Prerequisites
+
+- Node.js 22.5 or newer. Node 24+ is recommended.
+- npm, which is included with Node.js.
+- No separate SQLite installation is required. The app uses Node's built-in `node:sqlite` module and automatically creates `data/reports.sqlite` on first run.
+
+Check your local versions:
+
+```bash
+node --version
+npm --version
+```
+
+If `node --version` is older than 22.5, install a newer Node release before continuing.
+
+### Install and Run
+
 ```bash
 npm install
+npx playwright install chromium
 cp .env.example .env
 npm run dev
 ```
 
 Open `http://localhost:4177`.
 
-`OPENAI_API_KEY` is optional for UI testing. Without it, the app returns a clearly labeled heuristic report using the crawled evidence.
+`OPENAI_API_KEY` is optional for UI testing. Without it, the app returns a clearly labeled heuristic report using the crawled evidence. Add a real key to `.env` when you want AI-generated reports.
 
 ## Environment
 
@@ -28,13 +46,34 @@ The UI model dropdown includes `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4`, and `g
 ## Scripts
 
 ```bash
-npm run dev
-npm run build
-npm test
+npm run dev      # start the local app at http://localhost:4177
+npm run build    # compile TypeScript into dist/
+npm start        # run the compiled server after npm run build
+npm test         # build and run unit tests
 ```
+
+## Fresh Machine Checklist
+
+1. Clone the repo.
+2. Run `node --version` and confirm Node is 22.5 or newer.
+3. Run `npm install`.
+4. Run `npx playwright install chromium`.
+5. Run `cp .env.example .env`.
+6. Add `OPENAI_API_KEY` to `.env` if AI reports are needed.
+7. Run `npm run dev`.
+8. Open `http://localhost:4177`.
 
 ## Notes
 
 - Reports are stored in `data/reports.sqlite`.
+- `data/` is ignored by git because reports are local machine data.
 - The crawler respects same-domain limits, rate limits requests, and checks `robots.txt` where possible.
 - Public social/review links discovered from the official site are treated as directional signals.
+- If Playwright is not installed, normal HTML fetching still works, but JavaScript-heavy websites may not render correctly.
+
+## Troubleshooting
+
+- `Cannot find module node:sqlite` or SQLite-related startup errors: upgrade Node.js to 22.5 or newer.
+- `Executable doesn't exist` from Playwright: run `npx playwright install chromium`.
+- Port conflict on `4177`: change `PORT` in `.env`, then restart `npm run dev`.
+- Report generation works but says `heuristic`: set `OPENAI_API_KEY` in `.env` and restart the server.
